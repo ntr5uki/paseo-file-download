@@ -1,8 +1,16 @@
 {
   "name": "paseo-file-download",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Download files linked in agent replies through expiring HTTP links in Paseo.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntr5uki/paseo-file-download.git"
+  },
+  "homepage": "https://github.com/ntr5uki/paseo-file-download#readme",
+  "bugs": {
+    "url": "https://github.com/ntr5uki/paseo-file-download/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=22"

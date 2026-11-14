@@ -10,6 +10,16 @@ Download installers, archives and other files from cards below agent replies. Fi
 - A direct network path from your device to the download service, normally TCP port 6768.
 - Node.js 22+ and npm for development. Runtime production dependencies are installed automatically for Git/npm sources.
 
+## Install
+
+~~~sh
+paseo plugin add git:ntr5uki/paseo-file-download --ref v0.2.1
+~~~
+
+Linux desktop is the validated target. See the mobile browser/WireGuard limitation under Boundaries.
+
+![Download card in dark mode](assets/download-card-dark.png)
+
 ## Local development and installation
 
 Run these commands in the project directory:
@@ -63,7 +73,7 @@ Set Custom download URL to https://your-host.example/paseo-downloads. The proxy 
 
 Files must be non-hidden regular files in the agent's workspace. Path traversal and symlinks leaving that root are rejected. A modified or replaced file invalidates the issued link. There is no unauthenticated file listing: a ticket is created through authenticated Paseo plugin RPC, and authorizes only one file. Anyone who receives a valid link can use it until it expires or is consumed. Tokens stay in memory, are bounded in number, and disappear on reload. The /health route reveals only listener availability.
 
-Cards store file paths, names and sizes, never tokens or file bytes. Auto-cards cover completed replies after the plugin starts; /download can collect the latest historical reply. Card persistence follows Paseo's plugin timeline support. Downloads do not resume with a consumed link; request another one to retry. Native mobile opens a system-browser link and still needs device verification.
+Cards store file paths, names and sizes, never tokens or file bytes. Auto-cards cover completed replies after the plugin starts; /download can collect the latest historical reply. Card persistence follows Paseo's plugin timeline support. Downloads do not resume with a consumed link; request another one to retry. Linux desktop downloads have also been confirmed by the user. Native mobile renders the plugin UI and opens a system-browser link, but browser downloads have been reported to stall with WireGuard/VPN configurations. The current release targets the validated desktop workflow; general mobile download support remains unverified.
 
 ## Maintenance and sharing
 
@@ -77,7 +87,9 @@ paseo plugin logs paseo-file-download
 
 A daemon restart is not required. Version compatibility is deliberately bounded to 0.15.x; test a newer release before widening paseo-plugin.json.
 
-For sharing, put this directory in a Git repository and share its URL. Users can install with paseo plugin add https://github.com/YOUR_ACCOUNT/paseo-file-download. The manifest installs production dependencies from the lockfile. npm distribution is also prepared: inspect npm pack --dry-run, then publish under an available package name. Neither method uploads any workspace files or download content.
+Source repository: https://github.com/ntr5uki/paseo-file-download. Install directly with paseo plugin add git:ntr5uki/paseo-file-download. The Git preparation command uses npm ci --omit=dev --ignore-scripts with the committed lockfile. Installing the plugin does not upload workspace files or download content.
+
+The public release uses Git distribution. Before publishing an npm package, remove the Git-only preparation command and ship npm-shrinkwrap.json to lock the installed runtime dependency tree; npm does not publish package-lock.json.
 
 A public Paseo directory listing needs a pinned released commit or npm version. Real light, dark and compact UI screenshots are included in the manifest, along with OVERVIEW.md and its Chinese translation. Choose the repository, validate the exact release, and then submit the listing to https://github.com/getpaseo/plugins.
 

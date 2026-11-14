@@ -6,7 +6,17 @@
 
 支持 Paseo daemon 和客户端 0.15.4 至 0.15.x。
 
-安装本地项目：
+从公开仓库安装固定版本：
+
+~~~sh
+paseo plugin add git:ntr5uki/paseo-file-download --ref v0.2.1
+~~~
+
+Linux 桌面下载已验证；手机浏览器在 WireGuard/VPN 场景下仍有已知问题。
+
+![下载卡片](assets/download-card-dark.png)
+
+开发或安装本地项目：
 
 ~~~sh
 npm ci
@@ -45,7 +55,7 @@ paseo plugin install "$PWD"
 
 默认仅允许下载 Agent 所属工作区内的非隐藏普通文件。目录、隐藏文件、指向工作区外部的符号链接和外部网址会被排除。相对路径基于 Agent 的工作目录解析。普通文字中的裸文件名、图片和代码示例不生成下载卡片，一张卡片最多包含 12 个文件。
 
-Web 客户端通过 HTTPS 使用时，应配置 HTTPS 下载地址。插件本身提供 HTTP，可以通过反向代理提供 HTTPS；配置示例见英文 README。手机原生客户端会在系统浏览器中打开链接，原生保存行为仍需要实机验证。
+Web 客户端通过 HTTPS 使用时，应配置 HTTPS 下载地址。插件本身提供 HTTP，可以通过反向代理提供 HTTPS；配置示例见英文 README。Linux 客户端下载已经由用户确认可用。手机原生客户端可以显示插件界面并在系统浏览器打开链接，但已有 WireGuard/VPN 场景下下载停滞的反馈。当前版本以已验证的桌面流程为主，暂不承诺通用的手机端下载支持。
 
 ## 开发维护
 
@@ -61,8 +71,10 @@ paseo plugin logs paseo-file-download
 
 ## 分享
 
-建议先把项目放进 GitHub 或其他 Git 仓库。用户通过仓库 URL 安装，之后可以通过 Paseo 更新插件。项目同时准备了 npm 分发文件列表，也可以发布到 npm。
+源码仓库为 https://github.com/ntr5uki/paseo-file-download，可以通过 paseo plugin add git:ntr5uki/paseo-file-download 直接安装。Git 安装使用 npm ci --omit=dev --ignore-scripts 和仓库内的锁文件固定生产依赖。
 
-提交到 Paseo 官方插件目录时，需要指定实际仓库和固定版本。项目已包含英文与中文介绍、MIT 许可证和真实界面截图。当前没有绑定远程仓库，也没有上传或公开发布。
+当前公开版本采用 Git 分发。未来若发布到 npm，需要移除仅适用于 Git 的依赖准备命令，并发布 npm-shrinkwrap.json；npm 包不会包含 package-lock.json。
+
+提交到 Paseo 官方插件目录时，需要指定实际仓库和固定版本。项目已包含英文与中文介绍、MIT 许可证和真实界面截图。官方目录是否已收录，以提交审核的 issue 和官方目录状态为准。
 
 下载文件始终从自己的 daemon 主机提供，不会上传到源码仓库、npm 或插件目录。
