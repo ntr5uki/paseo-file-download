@@ -12,6 +12,8 @@ Download installers, archives and other files from cards below agent replies. Fi
 
 ## Install
 
+[Official registry submission](https://github.com/getpaseo/plugins/issues/2429) is pending review. Until the listing is approved, install the tagged Git release:
+
 ~~~sh
 paseo plugin add git:ntr5uki/paseo-file-download --ref v0.2.1
 ~~~

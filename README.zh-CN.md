@@ -6,7 +6,7 @@
 
 支持 Paseo daemon 和客户端 0.15.4 至 0.15.x。
 
-从公开仓库安装固定版本：
+已提交[官方目录审核申请 #2429](https://github.com/getpaseo/plugins/issues/2429)，目前等待审核。收录前可以从公开仓库安装固定版本：
 
 ~~~sh
 paseo plugin add git:ntr5uki/paseo-file-download --ref v0.2.1
