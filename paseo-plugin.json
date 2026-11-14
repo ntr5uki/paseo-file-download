@@ -1,0 +1,30 @@
+{
+  "id": "paseo-file-download",
+  "name": "File downloads",
+  "description": "Download files linked in agent replies through expiring HTTP links.",
+  "icon": "assets/icon.png",
+  "translations": {
+    "zh-CN": {
+      "name": "文件下载",
+      "description": "在 Agent 回复下显示文件卡片，通过短时 HTTP 链接下载文件。"
+    }
+  },
+  "media": [
+    "assets/download-card-dark.png",
+    "assets/download-card-light.png",
+    "assets/download-card-compact.png"
+  ],
+  "requirements": {
+    "paseo": ">=0.15.4 <0.16.0"
+  },
+  "build": [
+    [
+      "npm",
+      "install",
+      "--omit=dev",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ]
+  ]
+}
