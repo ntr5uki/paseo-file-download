@@ -1,6 +1,6 @@
 {
   "name": "paseo-file-download",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Download files linked in agent replies through expiring HTTP links in Paseo.",
   "license": "MIT",
   "type": "module",

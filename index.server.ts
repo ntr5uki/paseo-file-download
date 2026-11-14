@@ -1,5 +1,5 @@
 import type { PluginServerContext } from '@getpaseo/plugin/server';
-import { collectDownloads, downloadStatus, preferences, prepareDownload } from './shared/contracts';
+import { collectDownloads, discoverDownloads, downloadStatus, preferences, prepareDownload } from './shared/contracts';
 import { agentScope, publishDownloads } from './server/cards';
 import { DownloadService } from './server/http';
 
@@ -34,8 +34,9 @@ export default function contribute(server: PluginServerContext) {
     await initial;
     await configure();
     const scope = await agentScope(paseo, agentId);
-    return service.issue(scope.root, path);
+    return { ...await service.issue(scope.root, path), discovery: await service.discover() };
   });
+  server.handle(discoverDownloads, async () => { await initial; await configure(); return service.discover(); });
   server.handle(collectDownloads, async ({ agentId, path }, { paseo }) => publishDownloads(paseo, { id: agentId, cwd: '' }, { path }));
   server.handle(downloadStatus, async () => { await initial; return service.status(); });
   return async () => {

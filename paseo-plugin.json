@@ -12,7 +12,8 @@
   "media": [
     "assets/download-card-dark.png",
     "assets/download-card-light.png",
-    "assets/download-card-compact.png"
+    "assets/download-card-compact.png",
+    "assets/settings-auto-compact.png"
   ],
   "requirements": {
     "paseo": ">=0.15.4 <0.16.0"

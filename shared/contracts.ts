@@ -20,10 +20,18 @@ export const fileSchema = z.object({ path: z.string(), name: z.string(), size: z
 export const cardSchema = z.object({ agentId: z.string(), files: z.array(fileSchema).max(12) });
 export type DownloadFile = z.infer<typeof fileSchema>;
 export type DownloadCardData = z.infer<typeof cardSchema>;
+export const discoverySchema = z.object({
+  candidates: z.array(z.string()).max(24), manualUrl: z.string(), generation: z.string(),
+  probePath: z.string(), proof: z.string(), expiresAt: z.number(),
+});
+export type Discovery = z.infer<typeof discoverySchema>;
+export const discoverDownloads = defineRpc({
+  name: 'download.discover', input: z.object({}), output: discoverySchema,
+});
 export const prepareDownload = defineRpc({
   name: 'download.prepare',
   input: z.object({ agentId: z.string(), path: z.string().min(1).max(4096) }),
-  output: z.object({ url: z.string(), name: z.string(), expiresAt: z.number() }),
+  output: z.object({ url: z.string(), downloadPath: z.string(), name: z.string(), expiresAt: z.number(), discovery: discoverySchema }),
 });
 export const collectDownloads = defineRpc({
   name: 'download.collect',

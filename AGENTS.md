@@ -6,6 +6,8 @@ This is a Paseo plugin with separate client, server, and shared code. Keep impor
 - Reload only paseo-file-download; never restart the daemon for source changes.
 - Compatibility is currently >=0.15.4 <0.16.0. Verify daemon and client behavior before widening it.
 - Keep downloads streaming through HTTP. Never move installer contents into RPC responses or timeline data.
+- Verify automatic candidates with separate short-lived discovery proofs before sending download tickets. Keep automatically selected addresses in each client runtime, not shared daemon settings.
+- Discovery finds a reachable download route; it must not claim to read Paseo transport information that the public API does not expose.
 - Timeline cards contain paths and metadata only. Issue short-lived, single-use tickets when a user clicks Download.
 - Preserve workspace containment, hidden-file exclusion, stable file-handle reads, and ticket expiry.
 - Use React Native primitives and theme tokens. Browser globals belong only in client/web.ts; native uses the external URL opener.
