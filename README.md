@@ -6,16 +6,16 @@ Download installers, archives and other files from cards below agent replies. Fi
 
 ## Requirements
 
-- Paseo daemon and app 0.15.4 through 0.15.x.
+- Paseo daemon and app 0.15.4 through 0.16.x.
 - A direct network path from your device to the download service, normally TCP port 6768.
 - Node.js 22+ and npm for development. Runtime production dependencies are installed automatically for Git/npm sources.
 
 ## Install
 
-[Official registry submission](https://github.com/getpaseo/plugins/issues/2429) is pending review. Until the listing is approved, install the tagged Git release:
+[Listed in the official registry](https://github.com/getpaseo/plugins/pull/2430) as ntr5uki/file-download. Git registry updates are reviewed separately. To select the Paseo 0.16-compatible release directly:
 
 ~~~sh
-paseo plugin add git:ntr5uki/paseo-file-download --ref v0.2.1
+paseo plugin add git:ntr5uki/paseo-file-download --ref v0.2.2
 ~~~
 
 Linux desktop is the validated target. See the mobile browser/WireGuard limitation under Boundaries.
@@ -87,7 +87,7 @@ paseo plugin reload paseo-file-download
 paseo plugin logs paseo-file-download
 ~~~
 
-A daemon restart is not required. Version compatibility is deliberately bounded to 0.15.x; test a newer release before widening paseo-plugin.json.
+A daemon restart is not required. Compatibility is bounded to >=0.15.4 <0.17.0, with daemon and web-client behavior verified on 0.16.0. Test both runtimes before widening paseo-plugin.json further.
 
 Source repository: https://github.com/ntr5uki/paseo-file-download. Install directly with paseo plugin add git:ntr5uki/paseo-file-download. The Git preparation command uses npm ci --omit=dev --ignore-scripts with the committed lockfile. Installing the plugin does not upload workspace files or download content.
 
@@ -99,6 +99,6 @@ A public Paseo directory listing needs a pinned released commit or npm version. 
 
 npm run check typechecks both runtimes and exercises real HTTP transfers, including an 80 MiB binary file verified by SHA-256, Unicode filenames, empty files, expired/reused links, changed files, traversal, escaping symlinks, interrupted transfers, and port reuse. Discovery tests cover empty-URL downloads, wrong-host rejection, proof expiry, CORS/private-network preflights, client-local caching, route failover, separate devices, cancellation and custom URL precedence. Markdown parsing is checked separately.
 
-The live UI smoke test verified a real auto-generated card, an empty-URL automatic download with filename/hash checks, cached-address verification, wrong-host rejection and recovery, connection testing, and an optional custom override, with light, dark and 390 px layouts. To repeat it, use scripts/validate-ui.mjs against a local daemon and a workspace titled File download plugin containing a card for artifacts/test-package.zip. Set PASEO_TEST_WORKSPACE to its ID. PASEO_APP_DIST and PLAYWRIGHT_CHROMIUM_EXECUTABLE can select the local Paseo app build and an installed browser. The harness reads the local daemon credential in memory, without writing it or changing daemon CORS settings.
+The live UI smoke test verified a real auto-generated card, an empty-URL automatic download with filename/hash checks, cached-address verification, wrong-host rejection and recovery, connection testing, and an optional custom override, with light, dark and 390 px layouts. Downloads, settings and all three layouts were rechecked with the Paseo 0.16.0 daemon and web client, including real LAN and Tailscale routes. To repeat it, use scripts/validate-ui.mjs against a local daemon and an agent in a workspace titled File download plugin containing a card for artifacts/test-package.zip. Set PASEO_TEST_WORKSPACE and PASEO_TEST_AGENT to their IDs. PASEO_TEST_SCREENSHOTS selects the screenshot directory (defaults to assets); use an artifacts subdirectory when not updating published screenshots. PASEO_APP_DIST and PLAYWRIGHT_CHROMIUM_EXECUTABLE can select the local Paseo app build and an installed browser. The harness reads the local daemon credential in memory, without writing it or changing daemon CORS settings.
 
 MIT licensed.

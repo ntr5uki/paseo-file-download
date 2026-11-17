@@ -16,7 +16,7 @@
     "assets/settings-auto-compact.png"
   ],
   "requirements": {
-    "paseo": ">=0.15.4 <0.16.0"
+    "paseo": ">=0.15.4 <0.17.0"
   },
   "build": [
     [

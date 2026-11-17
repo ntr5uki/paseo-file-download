@@ -1,6 +1,6 @@
 {
   "name": "paseo-file-download",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Download files linked in agent replies through expiring HTTP links in Paseo.",
   "license": "MIT",
   "repository": {
@@ -35,7 +35,7 @@
     "check": "npm run typecheck && npm test"
   },
   "devDependencies": {
-    "@getpaseo/plugin": "0.15.4",
+    "@getpaseo/plugin": "0.16.0",
     "@tanstack/react-query": "^5.90.11",
     "@types/node": "^22.0.0",
     "@types/react": "~19.2.0",

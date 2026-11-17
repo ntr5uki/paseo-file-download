@@ -4,12 +4,12 @@
 
 ## 使用
 
-支持 Paseo daemon 和客户端 0.15.4 至 0.15.x。
+支持 Paseo daemon 和客户端 0.15.4 至 0.16.x。
 
-已提交[官方目录审核申请 #2429](https://github.com/getpaseo/plugins/issues/2429)，目前等待审核。收录前可以从公开仓库安装固定版本：
+已通过[官方目录审核并收录](https://github.com/getpaseo/plugins/pull/2430)，目录 ID 为 ntr5uki/file-download。Git 目录更新需要单独审核。要直接选择兼容 Paseo 0.16 的版本，可以安装以下标签：
 
 ~~~sh
-paseo plugin add git:ntr5uki/paseo-file-download --ref v0.2.1
+paseo plugin add git:ntr5uki/paseo-file-download --ref v0.2.2
 ~~~
 
 Linux 桌面下载已验证；手机浏览器在 WireGuard/VPN 场景下仍有已知问题。
@@ -65,9 +65,11 @@ paseo plugin reload paseo-file-download
 paseo plugin logs paseo-file-download
 ~~~
 
-只需要重载插件，无需重启 Paseo daemon。插件使用公开 API，未使用应用内部对象或界面拦截。版本要求暂时限定为 0.15.x，验证新版后再放宽范围。
+只需要重载插件，无需重启 Paseo daemon。插件使用公开 API，未使用应用内部对象或界面拦截。版本范围限定为 >=0.15.4 <0.17.0，已验证 0.16.0 daemon 和 Web 客户端；进一步放宽范围前，需要验证两端行为。
 
-测试覆盖 80 MiB 文件完整 SHA-256 校验、二进制原样传输、中文文件名、空文件、链接过期和重复使用、文件变化、路径越界、符号链接、中断下载及端口释放。新增测试覆盖空地址下载、主机身份验证、探测过期、缓存失效、多设备地址选择、取消和手动覆盖。真实 Paseo Web 界面已经验证不填写地址直接下载、缓存校验、错误主机拒绝与恢复、连接测试及高级设置，并检查浅色、深色与 390 像素窄屏。
+测试覆盖 80 MiB 文件完整 SHA-256 校验、二进制原样传输、中文文件名、空文件、链接过期和重复使用、文件变化、路径越界、符号链接、中断下载及端口释放。新增测试覆盖空地址下载、主机身份验证、探测过期、缓存失效、多设备地址选择、取消和手动覆盖。真实 Paseo Web 界面已经验证不填写地址直接下载、缓存校验、错误主机拒绝与恢复、连接测试及高级设置，并检查浅色、深色与 390 像素窄屏。以上下载、设置和三种界面已在 Paseo 0.16.0 daemon 与 Web 客户端上重新验证，包括真实局域网和 Tailscale 下载。
+
+重复界面验证时，使用名为 File download plugin 的已有工作区和其中的 Agent，并准备指向 artifacts/test-package.zip 的下载卡片。设置 PASEO_TEST_WORKSPACE 和 PASEO_TEST_AGENT 为它们的 ID，然后运行 node scripts/validate-ui.mjs。PASEO_TEST_SCREENSHOTS 可选择截图目录，默认为 assets；不更新公开截图时，应指定 artifacts 下的目录。PASEO_APP_DIST 和 PLAYWRIGHT_CHROMIUM_EXECUTABLE 可指定本地 Paseo Web 构建和已安装的浏览器。验证脚本仅在内存中读取本地认证信息，不保存凭据，也不修改 daemon 的 CORS 设置。
 
 ## 分享
 

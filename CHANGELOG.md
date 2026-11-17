@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2
+
+- Support Paseo 0.16.x after validating the 0.16.0 daemon and web client.
+- Update the development SDK to 0.16.0 and make UI validation select its target agent explicitly.
+- Correct the registry listing status and document direct installation of this release.
+
 ## 0.2.1
 
 - Prepare the public Git release and registry submission.

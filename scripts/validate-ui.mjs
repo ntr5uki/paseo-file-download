@@ -6,9 +6,11 @@ import { DaemonClient } from '@getpaseo/client/internal/daemon-client';
 import { startHarness } from './ui-harness.mjs';
 
 const workspaceId = process.env.PASEO_TEST_WORKSPACE;
-if (!workspaceId) throw new Error('Set PASEO_TEST_WORKSPACE to the workspace containing the validation card.');
+const agentId = process.env.PASEO_TEST_AGENT;
+if (!workspaceId || !agentId) throw new Error('Set PASEO_TEST_WORKSPACE and PASEO_TEST_AGENT to the workspace and agent containing the validation card.');
+const screenshots = process.env.PASEO_TEST_SCREENSHOTS ?? 'assets';
 const home = process.env.PASEO_HOME ?? homedir() + '/.paseo';
-const daemon = new DaemonClient({ url: 'ws://127.0.0.1:6767/ws', localCredential: () => readFile(home + '/local-credential', 'utf8').then((text) => text.trim()), clientId: 'file-download-ui-validation', clientType: 'cli', appVersion: '0.15.4', reconnect: { enabled: false } });
+const daemon = new DaemonClient({ url: 'ws://127.0.0.1:6767/ws', localCredential: () => readFile(home + '/local-credential', 'utf8').then((text) => text.trim()), clientId: 'file-download-ui-validation', clientType: 'cli', appVersion: '0.16.0', reconnect: { enabled: false } });
 const rpc = (method, input) => daemon.invokePluginRpc('paseo-file-download', method, input);
 await daemon.connect();
 const serverId = daemon.getLastServerInfoMessage()?.serverId;
@@ -17,12 +19,15 @@ const original = await rpc('settings.downloads.read', {});
 assert.equal(original.status, 'ready');
 await rpc('settings.downloads.write', { revision: original.revision, values: { ...original.values, publicUrl: '' } });
 const harness = await startHarness();
-await mkdir('artifacts', { recursive: true }); await mkdir('assets', { recursive: true });
+await mkdir('artifacts', { recursive: true }); await mkdir(screenshots, { recursive: true });
 try {
   const { page } = harness;
   await page.goto(harness.url);
   await page.getByText('File download plugin', { exact: true }).click();
+  await page.getByTestId('workspace-tab-agent_' + agentId).click();
   await page.getByText('可下载文件', { exact: true }).waitFor({ timeout: 15000 });
+  const workspaceUrl = page.url();
+  assert.ok(new URL(workspaceUrl).pathname.includes(workspaceId), 'The validation agent must belong to PASEO_TEST_WORKSPACE.');
   const downloadButton = page.getByRole('button', { name: '下载 test-package.zip', exact: true });
   const probes = [];
   page.on('request', (request) => { if (new URL(request.url()).pathname.startsWith('/probe/')) probes.push(request.url()); });
@@ -47,18 +52,18 @@ try {
   await downloadFile('browser-recovered-package.zip');
   console.log('Wrong identities rejected, then automatic recovery succeeded.');
   const visibleCard = page.getByText('可下载文件', { exact: true }).locator('..').locator('..');
-  await visibleCard.screenshot({ path: 'assets/download-card-light.png' });
+  await visibleCard.screenshot({ path: screenshots + '/download-card-light.png' });
   await page.emulateMedia({ colorScheme: 'dark' }); await page.waitForTimeout(350);
-  await visibleCard.screenshot({ path: 'assets/download-card-dark.png' });
+  await visibleCard.screenshot({ path: screenshots + '/download-card-dark.png' });
   await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(600);
   await visibleCard.waitFor({ state: 'visible' }); await visibleCard.scrollIntoViewIfNeeded();
   const bounds = await visibleCard.boundingBox(); assert.ok(bounds && bounds.width <= 390);
-  await visibleCard.screenshot({ path: 'assets/download-card-compact.png' });
+  await visibleCard.screenshot({ path: screenshots + '/download-card-compact.png' });
   await page.getByRole('button', { name: '下载设置', exact: true }).click();
   await page.getByRole('button', { name: '测试连接', exact: true }).click();
   await page.getByText(/^连接验证成功 · /).waitFor();
   await page.getByText('已发起下载', { exact: true }).last().waitFor({ state: 'hidden' });
-  await page.getByTestId('download-settings').screenshot({ path: 'assets/settings-auto-compact.png' });
+  await page.getByTestId('download-settings').screenshot({ path: screenshots + '/settings-auto-compact.png' });
   const advanced = page.getByRole('button', { name: /高级设置/ }); await advanced.click();
   const url = page.getByPlaceholder('自动检测');
   assert.equal(await url.inputValue(), ''); await url.fill('http://127.0.0.1:6768');
@@ -68,12 +73,14 @@ try {
   console.log('Compact automatic settings and optional manual override verified.');
   const saved = await rpc('settings.downloads.read', {});
   await rpc('settings.downloads.write', { revision: saved.revision, values: { ...saved.values, publicUrl: '' } });
+  await page.setViewportSize({ width: 1280, height: 900 });
   const network = await rpc('download.discover', {});
   const alternate = network.candidates.filter((base) => /^http:\/\/(100\.|192\.168\.)/.test(base));
   for (const base of alternate) {
     await page.route('**/probe/*', (route) => new URL(route.request().url()).origin === base
       ? route.continue() : route.fulfill({ status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: '{"proof":"wrong-host"}' }));
-    await page.goto(harness.url + '/h/' + serverId + '/workspace/' + workspaceId);
+    await page.goto(workspaceUrl);
+    await page.getByTestId('workspace-tab-agent_' + agentId).click();
     await page.getByText('可下载文件', { exact: true }).waitFor({ timeout: 15000 });
     await downloadFile('browser-alternate-package.zip');
     await page.unroute('**/probe/*');
@@ -82,7 +89,7 @@ try {
   assert.deepEqual(harness.errors, []); console.log('No application page errors.');
 } catch (error) {
   await harness.page.screenshot({ path: 'artifacts/ui-failure.png' });
-  console.log('Visible UI:', (await harness.page.locator('body').innerText()).slice(-3500)); throw error;
+  throw error;
 } finally {
   const current = await rpc('settings.downloads.read', {});
   if (current.status === 'ready') await rpc('settings.downloads.write', { revision: current.revision, values: original.values });

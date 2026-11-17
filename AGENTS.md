@@ -4,7 +4,7 @@ This is a Paseo plugin with separate client, server, and shared code. Keep impor
 
 - Validate with npm run check before installing or reloading.
 - Reload only paseo-file-download; never restart the daemon for source changes.
-- Compatibility is currently >=0.15.4 <0.16.0. Verify daemon and client behavior before widening it.
+- Compatibility is currently >=0.15.4 <0.17.0. Daemon and web client behavior have been verified on 0.16.0. Verify both runtimes before widening it further.
 - Keep downloads streaming through HTTP. Never move installer contents into RPC responses or timeline data.
 - Verify automatic candidates with separate short-lived discovery proofs before sending download tickets. Keep automatically selected addresses in each client runtime, not shared daemon settings.
 - Discovery finds a reachable download route; it must not claim to read Paseo transport information that the public API does not expose.
